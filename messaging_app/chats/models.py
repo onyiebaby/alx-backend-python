@@ -1,4 +1,5 @@
-from django.db import models
+import uuid
+from django.db import models 
 
 # Create your models here.
 class User(models.Model):
@@ -17,4 +18,9 @@ class Message(models.Model):
  conversations = models.ForeignKey('conversations', on_delete=models.CASCADE, related_name='conversation_messages')
  message_body =models.TextField(null=False)
  sent_at = models.DateTimeField(auto_now_add=True)
+
+ class Conversation(models.Model)
+  conversation_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False, db_index=True)
+  participants = models.ManyToManyField('user', related_name='conversation')
+  created_at = models.DateTimeField(auto_now_add=True)
                                    
