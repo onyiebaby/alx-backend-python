@@ -2,7 +2,7 @@ from rest_framework import serializers
 from .models import User, Conversation, Message
 
 class UserSerializer(serializers.ModelSerializer):
-    full_name = serializers.SerializerMethodField
+    full_name = serializers.SerializerMethodField()
     
     class Meta:
         model =  User
