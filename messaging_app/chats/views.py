@@ -1,7 +1,7 @@
 from django.shortcuts import render
 
 # Create your views here.
-from rest_framework import viewsets, status
+from rest_framework import viewsets, status, filters
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from .models import Conversation, Message
@@ -11,6 +11,10 @@ class ConversationViewSet(viewsets.ModelViewSet):
     queryset = Conversation.objects.all()
     serializer_class = ConversationSerializer
     permission_classes = [IsAuthenticated]
+    filters_backend = [filters.SearchFilter, filters.OrderingFilter]
+    search_fields = ['participants_username']
+    ordering_fields = ['created_at']
+
 
     def get_queryset(self):
         # Only show conversations where the user is a participant
@@ -21,7 +25,6 @@ class ConversationViewSet(viewsets.ModelViewSet):
         participants = request.data.get("participants", [])
         if request.user.id not in participants:
             participants.append(request.user.id)
-
         conversation = Conversation.objects.create()
         conversation.participants.set(participants)
         serializer = self.get_serializer(conversation)
@@ -32,6 +35,10 @@ class MessageViewSet(viewsets.ModelViewSet):
     queryset = Message.objects.all()
     serializer_class = MessageSerializer
     permission_classes = [IsAuthenticated]
+    filter_backends = [filters.SearchFilter, filters.OrderingFilter]
+    search_fields = ['content']  # allow search by message content
+    ordering_fields = ['timestamp']
+
 
     def get_queryset(self):
         # Only show messages from conversations the user belongs to
