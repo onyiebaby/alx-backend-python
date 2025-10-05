@@ -1,3 +1,60 @@
 from django.shortcuts import render
 
 # Create your views here.
+from rest_framework import viewsets, status
+from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
+from .models import Conversation, Message
+from .serializers import ConversationSerializer, MessageSerializer
+
+class ConversationViewSet(viewsets.ModelViewSet):
+    queryset = Conversation.objects.all()
+    serializer_class = ConversationSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        # Only show conversations where the user is a participant
+        return Conversation.objects.filter(participants=self.request.user)
+
+    def create(self, request, *args, **kwargs):
+        # Create a new conversation
+        participants = request.data.get("participants", [])
+        if request.user.id not in participants:
+            participants.append(request.user.id)
+
+        conversation = Conversation.objects.create()
+        conversation.participants.set(participants)
+        serializer = self.get_serializer(conversation)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+
+class MessageViewSet(viewsets.ModelViewSet):
+    queryset = Message.objects.all()
+    serializer_class = MessageSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        # Only show messages from conversations the user belongs to
+        return Message.objects.filter(conversation__participants=self.request.user)
+
+    def create(self, request, *args, **kwargs):
+        # Send a new message in a conversation
+        conversation_id = request.data.get("conversation")
+        content = request.data.get("content")
+
+        try:
+            conversation = Conversation.objects.get(id=conversation_id)
+        except Conversation.DoesNotExist:
+            return Response({"error": "Conversation not found"}, status=status.HTTP_404_NOT_FOUND)
+
+        if request.user not in conversation.participants.all():
+            return Response({"error": "You are not part of this conversation"}, status=status.HTTP_403_FORBIDDEN)
+
+        message = Message.objects.create(
+            conversation=conversation,
+            sender=request.user,
+            content=content
+        )
+
+        serializer = self.get_serializer(message)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
