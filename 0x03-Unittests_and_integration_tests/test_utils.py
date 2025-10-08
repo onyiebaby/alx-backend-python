@@ -63,9 +63,7 @@ class TestMemoize(unittest.TestCase):
         with patch.object(TestClass, "a_method", return_value=42) as mock_method:
             test_instance = TestClass()
 
-            # First call → should call a_method
             result1 = test_instance.a_property
-            # Second call → should use cached result
             result2 = test_instance.a_property
 
             self.assertEqual(result1, 42)
