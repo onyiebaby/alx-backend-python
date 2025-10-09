@@ -66,6 +66,7 @@ class TestMemoize(unittest.TestCase):
             TestClass, "a_method", return_value=42
          ) as mock_method:
              obj = TestClass()
+             
              self.assertEqual(obj.a_property, 42)
              self.assertEqual(obj.a_property, 42)
              mock_method.assert_called_once()
