@@ -69,7 +69,8 @@ class TestGithubOrgClient(unittest.TestCase):
         ({"license": {"key": "other_license"}}, "my_license", False),
     ])
     def test_has_license(self, repo, license_key, expected):
-        """Test GithubOrgClient.has_license returns correct boolean"""
-        client = GithubOrgClient("google")
-        result = client.has_license(repo, license_key)
-        self.assertAlmostEqual(result, expected)
+        """Test GithubOrgClient.has_license returns the correct value"""
+        self.assertAlmostEqual(GithubOrgClient.has_license(repo, license_key), expected)
+
+
+    
