@@ -4,8 +4,9 @@
 import unittest
 from unittest.mock import patch, PropertyMock
 from parameterized import parameterized
+from client import GithubOrgClient
 
-class GithubOrgClient:
+class TestGithubOrgClient(unittest.TestCase)
     """A client for fetching information from Github organizations"""
 
     @parameterized.expand([
