@@ -15,7 +15,7 @@ class TestGithubOrgClient(unittest.TestCase):
     ])
     @patch('client.get_json')
     def test_org(self, org_name, mock_get_json):
-        """Test that GithubOrgClient.org returns correct value and calls get_json"""
+        """Test that GithubOrgClient.org returns correct value"""
         mock_get_json.return_value = {"login": org_name}
 
         client = GithubOrgClient(org_name)
@@ -55,7 +55,9 @@ class TestGithubOrgClient(unittest.TestCase):
             'client.GithubOrgClient._public_repos_url',
             new_callable=PropertyMock
         ) as mock_url:
-            mock_url.return_value = "https://api.github.com/orgs/google/repos"
+            mock_url.return_value = (
+                "https://api.github.com/orgs/google/repos"
+            )
             client = GithubOrgClient("google")
             result = client.public_repos()
 
