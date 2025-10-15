@@ -18,9 +18,12 @@ class IsParticipantOfConversation(permissions.BasePermission):
         """
 
         if hasattr(obj, "participants"):
-            retun request.user in obj.participants.all()
+            return request.user in obj.participants.all()
 
         if hasattr(obj, "conversation"):
             return request.user in obj.conversation.participants.all()
+        
+        if request.method in ['POST', 'PUT', 'PATCH', 'DELETE']:
+            return True
         
         return False
