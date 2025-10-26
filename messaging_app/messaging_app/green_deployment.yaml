@@ -1,0 +1,18 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: messagimg-app-green
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: messagimg-app-green
+  template:
+    metadata:
+     app: messaging-app-green
+    spec:
+      containers:
+      - name: messaging-app-green
+        image: onyiebaby/messag-app:green
+        ports:
+        - containerPort: 8000

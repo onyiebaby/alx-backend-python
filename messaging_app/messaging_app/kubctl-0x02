@@ -1,1 +1,16 @@
-a
+#!/bin/bash
+
+echo "Deploying Blue version..."
+kubectl apply -f blue_deployment.yaml
+kubectl apply -f kubeservice.yaml
+
+echo "Checking Blue version logs..."
+kubectl logs -1 app=messaging-app-blue --tail=10
+
+echo "Checking Green version..."
+kubectl apply -f green_deploymment.yaml
+
+echo "Checking  Green version logs..."
+kubectl logs -1 app=messaging-app-green --tail=10
+
+echo "Blue-Green deployment complete!"

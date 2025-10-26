@@ -1,1 +1,12 @@
-apiVersion =
+apiVersion = v1
+kind: service
+metadata:
+  name: messaging-app-service
+spec:
+  selector:
+    app: messaging-app-blue
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 8000
+  type: LoadBalancer
